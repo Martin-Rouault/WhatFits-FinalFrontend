@@ -13,6 +13,7 @@ import VerifyEmailPage from "./pages/email/VerifyEmailPage"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import ForgotPasswordPage from "./pages/password/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/password/ResetPasswordPage"
+import { Toaster } from "sonner"
 
 export function App() {
   return (
@@ -44,6 +45,8 @@ export function App() {
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+
+        <Toaster />
       </main>
       
       <footer className="mx-auto max-w-7xl"></footer>

@@ -1,12 +1,10 @@
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/motion/button"
 import { Car, Heart, Images } from "lucide-react"
 import type { Build } from "@/types/build"
-import { useToggleLike } from "@/lib/hooks/builds/useToggleLike"
+import { LikeBtn } from "./LikeBtn"
 
 export function BuildCard({ build }: { build: Build }) {
-  const { mutate } = useToggleLike()
   const photo = build.photos?.[0]?.url
   const carName = `${build.car_model.make} ${build.car_model.name}`
 
@@ -50,23 +48,7 @@ export function BuildCard({ build }: { build: Build }) {
               {build.photos?.length ?? 0}
             </span>
           </span>
-
-          <Button
-            size="sm"
-            variant="secondary"
-            className="ml-auto border-0 bg-neutral-800 text-white hover:bg-neutral-700 dark:bg-white dark:text-neutral-800"
-            aria-pressed={build.liked}
-            onClick={() => {
-              mutate(build.id)
-            }}
-          >
-            <Heart
-              className={
-                build.liked ? "size-3.5 fill-current text-red-500" : "size-3.5"
-              }
-            />
-            Like
-          </Button>
+          <LikeBtn buildId={build.id} liked={build.liked} />
         </div>
       </div>
     </Card>
