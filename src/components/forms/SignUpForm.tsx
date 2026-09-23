@@ -1,19 +1,20 @@
 import { useForm } from "react-hook-form"
-import type { RegisterCredentials } from "@/api/auth.api"
+import type { RegisterPayload } from "@/types/auth"
 import { useRegister } from "@/lib/hooks/auth/useRegister"
 import { useNavigate } from "react-router"
 import { isAxiosError } from "axios"
 
 export function SignUpForm() {
-  const { register, handleSubmit } = useForm<RegisterCredentials>()
+  const { register, handleSubmit } = useForm<RegisterPayload>()
 
   const navigate = useNavigate()
 
   const { mutate, isPending, error } = useRegister()
 
-  function onSubmit(data: RegisterCredentials) {
+  function onSubmit(data: RegisterPayload) {
     mutate(data, {
-      onSuccess: () => navigate("/email-verification", { state: { email: data.email } }),
+      onSuccess: () =>
+        navigate("/email-verification", { state: { email: data.email } }),
     })
   }
 

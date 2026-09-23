@@ -7,7 +7,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.clear()
+      queryClient.setQueryData(['user'], null)
     },
   })
 }

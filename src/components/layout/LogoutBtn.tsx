@@ -2,13 +2,14 @@ import { useLogout } from "@/lib/hooks/auth/useLogout"
 import { LogOutIcon } from "lucide-react"
 import { useNavigate } from "react-router"
 
-export function LogoutBtn() {
+export function LogoutBtn({ onLoggedOut }: { onLoggedOut?: () => void }) {
   const { mutate } = useLogout()
   const navigate = useNavigate()
 
   function handleLogout() {
     mutate(undefined, {
       onSuccess: () => {
+        onLoggedOut?.()
         navigate("/")
       },
     })

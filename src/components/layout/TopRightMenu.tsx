@@ -9,12 +9,14 @@ import {
 import { SettingsIcon, UserIcon, Coffee, MenuIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogoutBtn } from "./LogoutBtn"
+import { useState } from "react"
 
 export default function TopRightMenu() {
   const { data: user } = useCurrentUser()
+  const [open, setOpen] = useState(false)
 
   return (
-    <MorphPopover>
+    <MorphPopover open={open} onOpenChange={setOpen}>
       <MorphPopoverTrigger>
         <Button variant="ghost" size="icon">
           <Avatar className="h-8 w-8">
@@ -27,19 +29,28 @@ export default function TopRightMenu() {
         <div className="flex min-w-45 flex-col gap-1 p-2">
           {user && (
             <NavLink to={"/profile"}>
-              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5">
+              <button
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5"
+                onClick={() => setOpen(false)}
+              >
                 <UserIcon className="h-4 w-4" />
                 Profile
               </button>
             </NavLink>
           )}
           <NavLink to={"/account"}>
-            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5">
+            <button
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5"
+              onClick={() => setOpen(false)}
+            >
               <SettingsIcon className="h-4 w-4" />
               Settings
             </button>
           </NavLink>
-          <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5">
+          <button
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-primary/5"
+            onClick={() => setOpen(false)}
+          >
             <Coffee className="h-4 w-4" />
             Donate
           </button>
@@ -47,7 +58,7 @@ export default function TopRightMenu() {
           {user && (
             <>
               <div className="my-1 h-px bg-border" />
-              <LogoutBtn />
+              <LogoutBtn onLoggedOut={() => setOpen(false)} />
             </>
           )}
         </div>
