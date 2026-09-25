@@ -14,6 +14,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute"
 import ForgotPasswordPage from "./pages/password/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/password/ResetPasswordPage"
 import { Toaster } from "sonner"
+import { BuildPage } from "./pages/BuildPage"
 
 export function App() {
   return (
@@ -27,9 +28,11 @@ export function App() {
       <main className="mx-auto max-w-7xl">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/feed" element={<FeedPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/feed" element={<FeedPage />} />
+          
+          <Route path="/build/:id" element={<BuildPage />} />
 
           <Route
             path="/email-verification"
@@ -48,7 +51,7 @@ export function App() {
 
         <Toaster />
       </main>
-      
+
       <footer className="mx-auto max-w-7xl"></footer>
     </>
   )

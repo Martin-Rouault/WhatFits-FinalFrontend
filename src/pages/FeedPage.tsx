@@ -1,6 +1,7 @@
 import { useBuilds } from "@/lib/hooks/builds/useBuilds"
 import { BuildCard } from "@/components/features/builds/BuildCard"
 import Loader from "@/components/layout/Loader"
+import { NavLink } from "react-router"
 
 export default function FeedPage() {
   const { data: builds, isLoading, isError } = useBuilds()
@@ -34,7 +35,9 @@ export default function FeedPage() {
     <div className="px-6 py-8">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {builds.map((build) => (
-          <BuildCard key={build.id} build={build} />
+          <NavLink to={`/build/${build.id}`}>
+            <BuildCard key={build.id} build={build} />
+          </NavLink>
         ))}
       </div>
     </div>

@@ -9,28 +9,61 @@ export function useToggleLike() {
     mutationFn: likeBuild,
 
     onMutate: async (buildId) => {
-      await queryClient.cancelQueries({ queryKey: ["builds"] }) // cancelling all queries to ensure that the data is not being compromised
-      const previous = queryClient.getQueryData<Build[]>(["builds"]) // snapshot if a rollback is needed
+      // On stoppe les refetch en cours sur les DEUX caches concernés
+      await queryClient.cancelQueries({ queryKey: ["builds"] })
+      await queryClient.cancelQueries({ queryKey: ["build", buildId] })
 
+      // Snapshots pour rollback
+      const previousList = queryClient.getQueryData<Build[]>(["builds"])
+      const previousBuild = queryClient.getQueryData<Build>(["build", buildId])
+
+      // 1) La liste ["builds"] (tableau)
       queryClient.setQueryData<Build[]>(["builds"], (old) =>
         old?.map((b) =>
           b.id === buildId
-            ? { ...b, liked: !b.liked, likes_count: b.likes_count + (b.liked ? -1 : 1) }
+            ? {
+                ...b,
+                liked: !b.liked,
+                likes_count: b.likes_count + (b.liked ? -1 : 1),
+              }
             : b,
         ),
       )
-      return { previous }
+
+      // 2) Le build seul ["build", id] (objet)
+      queryClient.setQueryData<Build>(["build", buildId], (old) =>
+        old
+          ? {
+              ...old,
+              liked: !old.liked,
+              likes_count: old.likes_count + (old.liked ? -1 : 1),
+            }
+          : old,
+      )
+
+      return { previousList, previousBuild }
     },
 
-    onError: (_err, _buildId, context) => {
-      if (context?.previous) queryClient.setQueryData(["builds"], context.previous)
+    onError: (_err, buildId, context) => {
+      if (context?.previousList !== undefined)
+        queryClient.setQueryData(["builds"], context.previousList)
+      if (context?.previousBuild !== undefined)
+        queryClient.setQueryData(["build", buildId], context.previousBuild)
     },
 
+    // On réaligne les deux caches sur les valeurs faisant autorité du serveur
     onSuccess: (data, buildId) => {
       queryClient.setQueryData<Build[]>(["builds"], (old) =>
         old?.map((b) =>
-          b.id === buildId ? { ...b, liked: data.liked, likes_count: data.likes_count } : b,
+          b.id === buildId
+            ? { ...b, liked: data.liked, likes_count: data.likes_count }
+            : b,
         ),
+      )
+      queryClient.setQueryData<Build>(["build", buildId], (old) =>
+        old
+          ? { ...old, liked: data.liked, likes_count: data.likes_count }
+          : old,
       )
     },
   })
